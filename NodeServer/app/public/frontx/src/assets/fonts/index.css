@@ -1,0 +1,58 @@
+/* BluuNext */
+@font-face {
+  font-family: 'Bluu Next';
+  src: local('Bluu Next'), url(./BluuNext-Bold.otf);
+}
+
+/* Office Code PRO */
+@font-face {
+  font-family: 'OfficeCodePro';
+  src: local('OfficeCodePro'), url(./OCP/OfficeCodePro-Regular.woff) format('woff');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'OfficeCodePro';
+  src: local('OfficeCodePro'), url(./OCP/OfficeCodePro-RegularItalic.woff) format('woff');
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'OfficeCodePro';
+  src: local('OfficeCodePro'), url(./OCP/OfficeCodePro-Medium.woff) format('woff');
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'OfficeCodePro';
+  src: local('OfficeCodePro'), url(./OCP/OfficeCodePro-MediumItalic.woff) format('woff');
+  font-weight: 500;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'OfficeCodePro';
+  src: local('OfficeCodePro'), url(./OCP/OfficeCodePro-Light.woff) format('woff');
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: 'OfficeCodePro';
+  src: local('OfficeCodePro'), url(./OCP/OfficeCodePro-LightItalic.woff) format('woff');
+  font-weight: 200;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'OfficeCodePro';
+  src: local('OfficeCodePro'), url(./OCP/OfficeCodePro-Bold.woff) format('woff');
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: 'OfficeCodePro';
+  src: local('OfficeCodePro'), url(./OCP/OfficeCodePro-BoldItalic.woff) format('woff');
+  font-weight: bold;
+  font-style: italic;
+}

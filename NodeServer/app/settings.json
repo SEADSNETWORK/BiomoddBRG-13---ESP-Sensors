@@ -1,0 +1,24 @@
+{
+    "port" : 2200,
+    "publicDirectory": "public/frontx/build",
+    "intro":{
+        "font": "The Edge",
+        "lc": 10,
+        "pa": 2,
+        "ma": 3,
+        "border": "green",
+        "color": "blue",
+        "text": "green"
+    },
+    "mongoString" : "mongodb+srv://subtiv:Vklcw0APQZBZ1r0O@cluster0.lhm9q.mongodb.net/data?retryWrites=true&w=majority",
+    "requiredFields" : [
+        "author",
+        "device",
+        "sensor",
+        "value"
+    ],
+    "game" : {
+        "resolution" : 5
+    }
+}
+
