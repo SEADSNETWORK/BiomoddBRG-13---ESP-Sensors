@@ -12,7 +12,7 @@
 2. Install PlatformIO plugin for VSCode.
 3. In VSCode: File > New Window.
 4. Open PlatformIO plugin (left side, 'Bee' icon).
-5. Open project, select Arduino folder.
+5. Open project, select ESP folder.
 6. Open `src/main.cpp`, change `const char * espId = "ESP-1";` to an unique indetifier name.
 7. Optional: change host url to the ip adress of your node server, change ssid and password to connect to your wifi network.
 8. Build project.
