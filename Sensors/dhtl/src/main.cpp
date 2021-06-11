@@ -23,7 +23,7 @@ bool useAuth = false; // use Socket.IO Authentication
 const char * serverUsername = "socketIOUsername";
 const char * serverPassword = "socketIOPassword";
 
-const char * espId = "ESP-3_DHT11";
+const char * espId = "ESP_DHT11";
 
 
 WiFiServer wifiServer(port);
