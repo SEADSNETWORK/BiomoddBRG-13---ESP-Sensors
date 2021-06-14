@@ -23,7 +23,7 @@ bool useAuth = false; // use Socket.IO Authentication
 const char * serverUsername = "socketIOUsername";
 const char * serverPassword = "socketIOPassword";
 
-const char * espId = "ESP-3_DHT11";
+const char * espId = "ESP_DHT11";
 
 
 WiFiServer wifiServer(port);
@@ -110,7 +110,10 @@ void loop() {
 
   // Change here the frequency of measurements and sending data with the websocket
   delay(2000);
-  sensorCode();
+
+  StaticJsonDocument<200> sensorData = sensorCode();
+
+  serializeJson(sensorData, Serial);
 
 }
 

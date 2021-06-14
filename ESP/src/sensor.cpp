@@ -36,7 +36,7 @@ void sensorSetup() {
   dht.begin();
 }
 
-void sensorCode() {
+StaticJsonDocument<200> sensorCode() {
   // Wait a few seconds between measurements.
   
 
@@ -51,7 +51,9 @@ void sensorCode() {
   // Check if any reads failed and exit early (to try again).
   if (isnan(h) || isnan(t) || isnan(f)) {
     Serial.println(F("Failed to read from DHT sensor!"));
-    return;
+    StaticJsonDocument<200> jsonData;
+    jsonData["error"] = "Failed to read from DHT sensor!";
+    return jsonData;
   }
 
   // Compute heat index in Fahrenheit (the default)
@@ -59,15 +61,17 @@ void sensorCode() {
   // Compute heat index in Celsius (isFahreheit = false)
   float hic = dht.computeHeatIndex(t, h, false);
 
-  Serial.print(F("Humidity: "));
-  Serial.print(h);
-  Serial.print(F("%  Temperature: "));
-  Serial.print(t);
-  Serial.print(F("°C "));
-  Serial.print(f);
-  Serial.print(F("°F  Heat index: "));
-  Serial.print(hic);
-  Serial.print(F("°C "));
-  Serial.print(hif);
-  Serial.println(F("°F"));
+  //return jsonData;
+
+  RawData rawData[] = {
+    {.dataType = "humidity", .value = h},
+    {.dataType = "temperature_c", .value = t},
+    {.dataType = "temperature_f", .value = f},
+    {.dataType = "heat_index_c", .value = hic},
+    {.dataType = "heat_index_f", .value = hif},
+
+  };
+
+  return convertToJson(rawData);
+
 }
