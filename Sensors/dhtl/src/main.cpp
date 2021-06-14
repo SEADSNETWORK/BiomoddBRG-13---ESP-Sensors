@@ -110,7 +110,10 @@ void loop() {
 
   // Change here the frequency of measurements and sending data with the websocket
   delay(2000);
-  sensorCode();
+
+  StaticJsonDocument<200> sensorData = sensorCode();
+
+  serializeJson(sensorData, Serial);
 
 }
 
