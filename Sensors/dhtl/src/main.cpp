@@ -4,11 +4,9 @@
 #include <WiFi.h>
 #include <WiFiMulti.h>
 #include <WiFiClientSecure.h>
-
-#include <SocketIoClient.h>
-
 #include <ArduinoJson.h>
 
+#include <socket.h>
 #include <sensor.h>
 
 const char* ssid = "FPDreamTeam";
@@ -20,23 +18,23 @@ char path[] = "/socket.io/?transport=websocket"; // Socket.IO Base Path /socket.
 bool useSSL = false; // Use SSL Authentication
 const char * sslFingerprint = "";  // SSL Certificate Fingerprint
 bool useAuth = false; // use Socket.IO Authentication
-const char * serverUsername = "socketIOUsername";
-const char * serverPassword = "socketIOPassword";
 
-const char * espId = "ESP_DHT11";
+const char * espId = "ESP_DHT10";
+
+unsigned long previousMillis = 0;
+int interval = 2000;
 
 
 WiFiServer wifiServer(port);
-SocketIoClient webSocket;
+Socket* socket = new Socket(host, port, path);
 
-// function declarations
+// function declaration
 
 void locate();
 
 
 // socket functions
-
-void socket_Connected(const char * payload, size_t length) {
+void connected(const char * payload, size_t length) {
   Serial.println("Connection made.");
 }
 
@@ -50,7 +48,7 @@ void socket_event(const char * payload, size_t length) {
     strcat(result,espId);
     strcat(result,"\"");
 
-    webSocket.emit("identifier", result);
+    socket->emit("identifier", result);
 
   }else if(String(payload) == String("locate")){
     locate();
@@ -68,6 +66,9 @@ void setup() {
 
   pinMode(21, OUTPUT); // locate led
 
+  // SENSOR SETUP HERE!
+  sensorSetup();
+
   // wifi
 
 	WiFi.begin(ssid, password);
@@ -84,36 +85,32 @@ void setup() {
   Serial.println(WiFi.localIP());
 
 	// Setup 'on' listen events
-  webSocket.on("connect", socket_Connected);
-  webSocket.on("event", socket_event);
-
-  // Setup Connection
-  if (useSSL) {
-    webSocket.beginSSL(host, port, path, sslFingerprint);
-  } else {
-    webSocket.begin(host, port, path);
-  }
-  
-  // Handle Authentication
-  if (useAuth) {
-    webSocket.setAuthorization(serverUsername, serverPassword);
-  }
-
-
-  // SENSOR SETUP HERE!
-  sensorSetup();
+  socket->webSocket.on("connect", connected);
+  socket->webSocket.on("event", socket_event);
 
 }
 
 void loop() {
-  webSocket.loop();
 
-  // Change here the frequency of measurements and sending data with the websocket
-  delay(2000);
+  socket->webSocket.loop();
 
-  StaticJsonDocument<200> sensorData = sensorCode();
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis >= interval){
 
-  serializeJson(sensorData, Serial);
+    // Change here the frequency of measurements and sending data with the websocket
+    //delay(500);
+
+    //StaticJsonDocument<200> sensorData = sensorCode();
+
+    socket->emitJson("sensor_data", sensorCode());
+
+    //serializeJson(sensorData, Serial);
+
+
+
+
+    previousMillis = millis();
+  }
 
 }
 
