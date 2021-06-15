@@ -5,11 +5,12 @@
 #include <string.h>
 #include <bits/stdc++.h>
 
-typedef struct RawData {
-  const char* dataType;
+struct RawData {
+  const char * dataType;
   float value;
 };
 
-StaticJsonDocument<200> convertToJson(RawData (&rawData)[5]);
+template <std::size_t SIZE>
+StaticJsonDocument<200> convertToJson(std::array<RawData, SIZE> &rawData);
 
 #endif
