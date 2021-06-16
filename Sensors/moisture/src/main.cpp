@@ -1,14 +1,20 @@
+// FIRST
+
+// check if the sensor library is present in the lib folder
+// include the library in sensor.h file
+// write setup en loop codes in sensor.cpp
+// change the espId to an unique identifier (line 30)
+
+
 #include <Arduino.h>
 #include <string>
 
 #include <WiFi.h>
 #include <WiFiMulti.h>
 #include <WiFiClientSecure.h>
-
-#include <SocketIoClient.h>
-
 #include <ArduinoJson.h>
 
+#include <socket.h>
 #include <sensor.h>
 
 const char* ssid = "FPDreamTeam";
@@ -20,23 +26,23 @@ char path[] = "/socket.io/?transport=websocket"; // Socket.IO Base Path /socket.
 bool useSSL = false; // Use SSL Authentication
 const char * sslFingerprint = "";  // SSL Certificate Fingerprint
 bool useAuth = false; // use Socket.IO Authentication
-const char * serverUsername = "socketIOUsername";
-const char * serverPassword = "socketIOPassword";
 
-const char * espId = "ESP_DHT11";
+const char * espId = "ESP_MOISTURE_1"; // change this to an unique identifier.
+
+unsigned long previousMillis = 0;
+int interval = 2000; // time between sensor mesuerements
 
 
 WiFiServer wifiServer(port);
-SocketIoClient webSocket;
+Socket* socket = new Socket(host, port, path);
 
-// function declarations
+// function declaration
 
 void locate();
 
 
 // socket functions
-
-void socket_Connected(const char * payload, size_t length) {
+void connected(const char * payload, size_t length) {
   Serial.println("Connection made.");
 }
 
@@ -50,7 +56,7 @@ void socket_event(const char * payload, size_t length) {
     strcat(result,espId);
     strcat(result,"\"");
 
-    webSocket.emit("identifier", result);
+    socket->emit("identifier", result);
 
   }else if(String(payload) == String("locate")){
     locate();
@@ -68,6 +74,9 @@ void setup() {
 
   pinMode(21, OUTPUT); // locate led
 
+  // SENSOR SETUP HERE!
+  sensorSetup();
+
   // wifi
 
 	WiFi.begin(ssid, password);
@@ -84,33 +93,22 @@ void setup() {
   Serial.println(WiFi.localIP());
 
 	// Setup 'on' listen events
-  webSocket.on("connect", socket_Connected);
-  webSocket.on("event", socket_event);
-
-  // Setup Connection
-  if (useSSL) {
-    webSocket.beginSSL(host, port, path, sslFingerprint);
-  } else {
-    webSocket.begin(host, port, path);
-  }
-  
-  // Handle Authentication
-  if (useAuth) {
-    webSocket.setAuthorization(serverUsername, serverPassword);
-  }
-
-
-  // SENSOR SETUP HERE!
-  sensorSetup();
+  socket->webSocket.on("connect", connected);
+  socket->webSocket.on("event", socket_event);
 
 }
 
 void loop() {
-  webSocket.loop();
 
-  // Change here the frequency of measurements and sending data with the websocket
-  delay(2000);
-  sensorCode();
+  socket->webSocket.loop();
+
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis >= interval){
+
+    socket->emitJson("sensor_data", sensorCode());
+
+    previousMillis = millis();
+  }
 
 }
 

@@ -27,7 +27,7 @@ bool useSSL = false; // Use SSL Authentication
 const char * sslFingerprint = "";  // SSL Certificate Fingerprint
 bool useAuth = false; // use Socket.IO Authentication
 
-const char * espId = "ESP_TEMPLATE"; // change this to an unique identifier.
+const char * espId = "ESP_DHT10"; // change this to an unique identifier.
 const int version = 2;
 
 unsigned long previousMillis = 0;

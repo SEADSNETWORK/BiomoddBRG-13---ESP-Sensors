@@ -2,24 +2,29 @@
 #include "json.h"
 #include "json.cpp"
 
-#define DHTPIN 5
-#define DHTTYPE DHT11
+// Pin declaration and other defines here
 
-DHT dht(DHTPIN, DHTTYPE);
+int sensorpin = 36;
+int sensorVal;
 
 void sensorSetup() {
-  dht.begin();
+  
+  // sensor setup code here
+  pinMode(sensorpin, INPUT);
+
 }
 
 StaticJsonDocument<200> sensorCode() {
   
-  // sensor code here
+  // sensor loop code here
+  sensorVal = analogRead(sensorpin);
 
-  //return jsonData;
+  // return jsonData;
+
+  // put sensor result here below! MAX 2 value's due to buffer overflow.
 
   RawData rawData[] = {
-    {.dataType = "sensor_value_1", .value = "value"},
-    {.dataType = "sensor_value_2", .value = "value"}
+    {.dataType = "moisture", .value = sensorVal}
   };
 
   const size_t n = sizeof(rawData) / sizeof(rawData[0]);
