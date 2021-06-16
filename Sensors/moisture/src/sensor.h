@@ -4,8 +4,6 @@
 #include <ArduinoJson.h>
 #include <json.h>
 
-// sensor library here
-
 void sensorSetup();
 StaticJsonDocument<200> sensorCode();
 

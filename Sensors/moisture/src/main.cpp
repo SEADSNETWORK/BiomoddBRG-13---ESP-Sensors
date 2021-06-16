@@ -1,3 +1,11 @@
+// FIRST
+
+// check if the sensor library is present in the lib folder
+// include the library in sensor.h file
+// write setup en loop codes in sensor.cpp
+// change the espId to an unique identifier (line 30)
+
+
 #include <Arduino.h>
 #include <string>
 
@@ -19,10 +27,10 @@ bool useSSL = false; // Use SSL Authentication
 const char * sslFingerprint = "";  // SSL Certificate Fingerprint
 bool useAuth = false; // use Socket.IO Authentication
 
-const char * espId = "ESP_DHT10";
+const char * espId = "ESP_MOISTURE_1"; // change this to an unique identifier.
 
 unsigned long previousMillis = 0;
-int interval = 2000;
+int interval = 2000; // time between sensor mesuerements
 
 
 WiFiServer wifiServer(port);
@@ -97,17 +105,7 @@ void loop() {
   unsigned long currentMillis = millis();
   if (currentMillis - previousMillis >= interval){
 
-    // Change here the frequency of measurements and sending data with the websocket
-    //delay(500);
-
-    //StaticJsonDocument<200> sensorData = sensorCode();
-
     socket->emitJson("sensor_data", sensorCode());
-
-    //serializeJson(sensorData, Serial);
-
-
-
 
     previousMillis = millis();
   }

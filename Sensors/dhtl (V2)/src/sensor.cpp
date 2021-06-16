@@ -12,14 +12,25 @@ void sensorSetup() {
 }
 
 StaticJsonDocument<200> sensorCode() {
-  
-  // sensor code here
+  float h = dht.readHumidity();
+  float t = dht.readTemperature();
+  float f = dht.readTemperature(true);
+
+  if (isnan(h) || isnan(t) || isnan(f)) {
+    Serial.println(F("Failed to read from DHT sensor!"));
+    StaticJsonDocument<200> jsonData;
+    jsonData["error"] = "Failed to read from DHT sensor!";
+    return jsonData;
+  }
+
+  float hif = dht.computeHeatIndex(f, h);
+  float hic = dht.computeHeatIndex(t, h, false);
 
   //return jsonData;
 
   RawData rawData[] = {
-    {.dataType = "sensor_value_1", .value = "value"},
-    {.dataType = "sensor_value_2", .value = "value"}
+    {.dataType = "humidity", .value = h},
+    {.dataType = "temperature_c", .value = t}
   };
 
   const size_t n = sizeof(rawData) / sizeof(rawData[0]);
