@@ -10,6 +10,11 @@ struct RawData {
   float value;
 };
 
+struct EspData {
+  const char * eid;
+  const float version;
+};
+
 template <std::size_t SIZE>
 StaticJsonDocument<200> convertToJson(std::array<RawData, SIZE> &rawData);
 

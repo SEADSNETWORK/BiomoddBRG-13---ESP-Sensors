@@ -4,7 +4,7 @@
 
 // Pin declaration and other defines here
 
-int sensorpin = 36;
+int sensorpin = 34;
 int sensorVal;
 
 void sensorSetup() {

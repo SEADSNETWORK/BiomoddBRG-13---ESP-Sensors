@@ -2,13 +2,10 @@
 #include "json.h"
 #include "json.cpp"
 
-#define DHTPIN 5
-#define DHTTYPE DHT11
-
-DHT dht(DHTPIN, DHTTYPE);
+// defines here
 
 void sensorSetup() {
-  dht.begin();
+  // sensor setup code here
 }
 
 StaticJsonDocument<200> sensorCode() {
@@ -18,8 +15,8 @@ StaticJsonDocument<200> sensorCode() {
   //return jsonData;
 
   RawData rawData[] = {
-    {.dataType = "sensor_value_1", .value = "value"},
-    {.dataType = "sensor_value_2", .value = "value"}
+    {.dataType = "sensor_value_1", .value = 0},
+    {.dataType = "sensor_value_2", .value = 0}
   };
 
   const size_t n = sizeof(rawData) / sizeof(rawData[0]);
