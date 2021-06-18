@@ -1,33 +1,134 @@
+// FIRST
+
+// check if the sensor library is present in the lib folder
+// include the library in sensor.h file
+// write setup en loop codes in sensor.cpp
+// change the espId to an unique identifier (line 30)
+
+
 #include <Arduino.h>
+#include <string>
 
-int Sensor = 13;   //Input Pin
-int LED = 32;     // Led pin for Indication
+#include <WiFi.h>
+#include <WiFiMulti.h>
+#include <WiFiClientSecure.h>
+#include <ArduinoJson.h>
 
-void setup() {
-  
-  Serial.begin(9600);
-  delay(3000);
+#include <socket.h>
+#include <sensor.h>
 
-  // Turn on the blacklight and print a message.
-  pinMode (Sensor, INPUT);  //Define Pin as input
-  pinMode (LED, OUTPUT);    //Led as OUTPUT
-  Serial.println("Waiting for motion");
-  digitalWrite(LED, 0);
+const char* ssid = "FPDreamTeam";
+const char* password =  "fullproject";
+
+char host[] = "10.0.0.1"; // Socket.IO Server Address
+int port = 2200; // Socket.IO Port Address
+char path[] = "/socket.io/?transport=websocket"; // Socket.IO Base Path /socket.io/?transport=websocket
+bool useSSL = false; // Use SSL Authentication
+const char * sslFingerprint = "";  // SSL Certificate Fingerprint
+bool useAuth = false; // use Socket.IO Authentication
+
+const char * espId = "ESP_microwavesensor"; // change this to an unique identifier.
+const int version = 2;
+
+unsigned long previousMillis = 0;
+int interval = 2000; // time between sensor mesuerements
+
+
+WiFiServer wifiServer(port);
+Socket* socket = new Socket(host, port, path);
+
+// function declaration
+
+void locate();
+
+
+// socket functions
+void connected(const char * payload, size_t length) {
+  Serial.println("Connection made.");
 }
- 
-void loop() {
-  int sensorValue = digitalRead(Sensor);
-  
-  if(sensorValue == 1){
-    digitalWrite(LED, 1);
-    Serial.println(sensorValue);
-    Serial.println("Motion Detected");
+
+void socket_event(const char * payload, size_t length) {
+  Serial.print("got message: ");
+  Serial.println(payload);
+
+  if(String(payload) == String("get_name")){
+
+    EspData espData = {
+      .eid = espId,
+      .version = version
+    };
+
+    StaticJsonDocument<200> jsonEspData;
+    jsonEspData["espId"] = espData.eid;
+    jsonEspData["version"] = espData.version;
+
+    socket->emitJson("identifier", jsonEspData);
+
+  }else if(String(payload) == String("locate")){
+    locate();
+  }else{
+    Serial.print("unknown command");
   }
 
-  if(sensorValue == 0){
-    digitalWrite(LED, 0);
-    Serial.println(sensorValue);
-    Serial.println("NO Motion");
-  }  
-  delay(1000);
+}
+
+
+void setup() {
+	Serial.begin(9600);
+
+  // pin configuration
+
+  pinMode(21, OUTPUT); // locate led
+
+  // SENSOR SETUP HERE!
+  sensorSetup();
+
+  // wifi
+
+	WiFi.begin(ssid, password);
+
+	Serial.print("Connecting to WiFi..");
+	while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.print(".");
+  }
+
+	Serial.println("");
+ 
+  Serial.print("Connected to the WiFi network. IP:");
+  Serial.println(WiFi.localIP());
+
+	// Setup 'on' listen events
+  socket->webSocket.on("connect", connected);
+  socket->webSocket.on("event", socket_event);
+
+}
+
+void loop() {
+
+  socket->webSocket.loop();
+
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis >= interval){
+
+    socket->emitJson("sensor_data", sensorCode());
+
+    previousMillis = millis();
+  }
+
+}
+
+
+
+// functions
+
+void locate(){ // flash led to locate ESP
+  for (size_t i = 0; i < 10; i++)
+  {
+    digitalWrite(21, HIGH);   // turn the LED on (HIGH is the voltage level)
+    delay(500);                       // wait for a second
+    digitalWrite(21, LOW);    // turn the LED off by making the voltage LOW
+    delay(500);
+  }
+  
 }
