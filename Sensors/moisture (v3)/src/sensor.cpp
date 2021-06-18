@@ -2,21 +2,29 @@
 #include "json.h"
 #include "json.cpp"
 
-// defines here
+// Pin declaration and other defines here
+
+int sensorpin = 34;
+int sensorVal;
 
 void sensorSetup() {
+  
   // sensor setup code here
+  pinMode(sensorpin, INPUT);
+
 }
 
 StaticJsonDocument<200> sensorCode() {
   
-  // sensor code here
+  // sensor loop code here
+  sensorVal = analogRead(sensorpin);
 
-  //return jsonData;
+  // return jsonData;
+
+  // put sensor result here below! MAX 2 value's due to buffer overflow.
 
   RawData rawData[] = {
-    {.dataType = "sensor_value_1", .value = 0},
-    {.dataType = "sensor_value_2", .value = 0}
+    {.dataType = "moisture", .value = sensorVal}
   };
 
   const size_t n = sizeof(rawData) / sizeof(rawData[0]);
