@@ -30,7 +30,7 @@ const char * sslFingerprint = "";
 bool useAuth = false;
 
 const int espIdAdressSize = 10;
-const char * espId = "ESP_DHT_20"; // change this to an unique identifier.
+const char * espId = "ESP_DHT_2"; // change this to an unique identifier.
 const int version = 3;
 
 unsigned long previousMillis = 0;
