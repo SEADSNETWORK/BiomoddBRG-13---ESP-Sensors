@@ -44,8 +44,7 @@ StaticJsonDocument<200> sensorCode() {
   //return jsonData;
 
   RawData rawData[] = {
-    {.dataType = "sensor_value_1", .value = 0},
-    {.dataType = "sensor_value_2", .value = 0}
+    {.dataType = "heartbeat value", .value = 0}
   };
 
   const size_t n = sizeof(rawData) / sizeof(rawData[0]);
