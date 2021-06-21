@@ -2,7 +2,7 @@
 #include "json.h"
 #include "json.cpp"
 
-#define DHTPIN 5
+#define DHTPIN 36
 #define DHTTYPE DHT11
 
 DHT dht(DHTPIN, DHTTYPE);
