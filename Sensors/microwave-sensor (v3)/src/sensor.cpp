@@ -3,7 +3,7 @@
 #include "json.cpp"
 
 //tutorial code from seeedstudio
-int MW_out = 2;  
+int MW_out = 36;  
 uint8_t check_code;
 
 void sensorSetup() {

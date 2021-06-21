@@ -8,6 +8,7 @@
 
 #include <Arduino.h>
 #include <string>
+#include <EEPROM.h>
 
 #include <WiFi.h>
 #include <WiFiMulti.h>
@@ -16,31 +17,34 @@
 
 #include <socket.h>
 #include <sensor.h>
+#include <statusled.h>
 
 const char* ssid = "FPDreamTeam";
 const char* password =  "fullproject";
 
-char host[] = "10.0.0.1"; // Socket.IO Server Address
-int port = 2200; // Socket.IO Port Address
+char host[] = "10.0.0.1";
+int port = 2200;
 char path[] = "/socket.io/?transport=websocket"; // Socket.IO Base Path /socket.io/?transport=websocket
-bool useSSL = false; // Use SSL Authentication
-const char * sslFingerprint = "";  // SSL Certificate Fingerprint
-bool useAuth = false; // use Socket.IO Authentication
+bool useSSL = false;
+const char * sslFingerprint = "";
+bool useAuth = false;
 
-const char * espId = "ESP_microwavesensor"; // change this to an unique identifier.
-const int version = 2;
+const int espIdAdressSize = 10;
+const char * espId = "ESP_DHT_10"; // change this to an unique identifier.
+const int version = 3;
 
 unsigned long previousMillis = 0;
 int interval = 2000; // time between sensor mesuerements
 
 
 WiFiServer wifiServer(port);
-Socket* socket = new Socket(host, port, path);
+Socket * socket = new Socket(host, port, path);
+StatusLed * statusManager = new StatusLed();
 
 // function declaration
 
-void locate();
-
+const char * getEspId();
+void setEspId(byte* first, size_t len);
 
 // socket functions
 void connected(const char * payload, size_t length) {
@@ -50,6 +54,8 @@ void connected(const char * payload, size_t length) {
 void socket_event(const char * payload, size_t length) {
   Serial.print("got message: ");
   Serial.println(payload);
+
+  statusManager->changeStatus(StatusLed::RECEIVING);
 
   if(String(payload) == String("get_name")){
 
@@ -64,21 +70,26 @@ void socket_event(const char * payload, size_t length) {
 
     socket->emitJson("identifier", jsonEspData);
 
+    statusManager->changeStatus(StatusLed::READY);
+
   }else if(String(payload) == String("locate")){
-    locate();
+    statusManager->changeStatus(StatusLed::LOCATE);
+  }else if(String(payload) == String("change_name")){
+
   }else{
     Serial.print("unknown command");
   }
 
 }
 
+// V4 Maybe
+void socket_changeName(const char * payload, size_t length){
+   
+}
+
 
 void setup() {
 	Serial.begin(9600);
-
-  // pin configuration
-
-  pinMode(21, OUTPUT); // locate led
 
   // SENSOR SETUP HERE!
   sensorSetup();
@@ -101,6 +112,7 @@ void setup() {
 	// Setup 'on' listen events
   socket->webSocket.on("connect", connected);
   socket->webSocket.on("event", socket_event);
+  socket->webSocket.on("changename", socket_changeName);
 
 }
 
@@ -110,9 +122,9 @@ void loop() {
 
   unsigned long currentMillis = millis();
   if (currentMillis - previousMillis >= interval){
-
+    statusManager->watchStatus();
     socket->emitJson("sensor_data", sensorCode());
-
+    statusManager->changeStatus(StatusLed::SENDING);
     previousMillis = millis();
   }
 
@@ -120,15 +132,19 @@ void loop() {
 
 
 
-// functions
 
-void locate(){ // flash led to locate ESP
-  for (size_t i = 0; i < 10; i++)
-  {
-    digitalWrite(21, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(500);                       // wait for a second
-    digitalWrite(21, LOW);    // turn the LED off by making the voltage LOW
-    delay(500);
+// functies
+
+const char * getEspId(){
+  byte res;
+  for(int i = 0; i < espIdAdressSize; i++){
+    res = EEPROM.read(i);
+    Serial.print((char)res);
   }
-  
+}
+
+void setEspId(byte* first){
+  for(int i = 0; i < espIdAdressSize; i++){
+	  EEPROM.write(i, first[i]);
+  }
 }
