@@ -12,20 +12,19 @@ void sensorSetup() {
 
 StaticJsonDocument<200> sensorCode() {
   
-  if((digitalRead(10) == 1)||(digitalRead(11) == 1)){
-    Serial.println('!');
+  if((digitalRead(4) == 1)||(digitalRead(5) == 1)){
+    StaticJsonDocument<200> jsonData;
+    jsonData["error"] = "Pulse not in range to read!";
+    return jsonData;
   }
-  else{
-    // send the value of analog input 0:
-      Serial.println(analogRead(A0));
-  }
+  float pulse = analogRead(A0);
   //Wait for a bit to keep serial data from saturating
   delay(1);
 
   //return jsonData;
 
   RawData rawData[] = {
-    {.dataType = "hearbeat value", .value = 0}
+    {.dataType = "heartbeat value", .value = pulse}
   };
 
   const size_t n = sizeof(rawData) / sizeof(rawData[0]);

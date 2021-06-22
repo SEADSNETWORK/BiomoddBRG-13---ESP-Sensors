@@ -47,8 +47,6 @@ StaticJsonDocument<200> sensorCode() {
     adc0 = ads.getLastConversionResults();
 
     //Serial Print
-    Serial.print("AIN0: "); Serial.println(adc0 * 0.125); // 1x gain example
-    Serial.println("----------------");
     Serial.println("Hello, this is my pulse:");
     Serial.println(adc0 * 0.125); // single value (ico. Processing)
     Serial.println("- - - - - - - - ");
