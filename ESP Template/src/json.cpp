@@ -4,7 +4,27 @@ template<std::size_t SIZE>
 StaticJsonDocument<200> convertToJson(std::array<RawData, SIZE> &rawData){
   StaticJsonDocument<200> jsonData;
   for(const RawData dataItem: rawData){
-    jsonData[dataItem.dataType] = dataItem.value;
+
+    // normalisatie hier
+
+    if(dataItem.normalize == true){
+      if(dataItem.value > dataItem.maxValue || dataItem.value < 0){
+        jsonData[dataItem.dataType] = 'Value exceeding boundries';
+      }else{
+
+        // normalisatie hier
+
+        float ratio = dataItem.value / dataItem.maxValue;
+
+
+        jsonData[dataItem.dataType] = ratio;
+      }
+    }else{
+      jsonData[dataItem.dataType] = dataItem.value;
+    }
+
+    
+    
   }
   return jsonData;
 }

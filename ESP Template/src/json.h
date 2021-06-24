@@ -8,6 +8,8 @@
 struct RawData {
   const char * dataType;
   float value;
+  bool normalize;
+  float maxValue;
 };
 
 struct EspData {
@@ -16,6 +18,6 @@ struct EspData {
 };
 
 template <std::size_t SIZE>
-StaticJsonDocument<200> convertToJson(std::array<RawData, SIZE> &rawData);
+StaticJsonDocument<200> convertToJson(std::array<RawData, SIZE> &rawData, float minValue, float maxValue);
 
 #endif

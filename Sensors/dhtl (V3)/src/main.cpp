@@ -19,10 +19,10 @@
 #include <sensor.h>
 #include <statusled.h>
 
-const char* ssid = "FPDreamTeam";
-const char* password =  "fullproject";
+const char* ssid = "biomodd";
+const char* password =  "SEADSBRG13";
 
-char host[] = "10.0.0.1";
+char host[] = "192.168.0.111";
 int port = 2200;
 char path[] = "/socket.io/?transport=websocket"; // Socket.IO Base Path /socket.io/?transport=websocket
 bool useSSL = false;
@@ -30,7 +30,7 @@ const char * sslFingerprint = "";
 bool useAuth = false;
 
 const int espIdAdressSize = 10;
-const char * espId = "ESP_DHT_2"; // change this to an unique identifier.
+const char * espId = "ESP_DHT_3"; // change this to an unique identifier.
 const int version = 3;
 
 unsigned long previousMillis = 0;
