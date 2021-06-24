@@ -8,7 +8,7 @@ StaticJsonDocument<200> convertToJson(std::array<RawData, SIZE> &rawData){
     // normalisatie hier
 
     if(dataItem.normalize == true){
-      if(dataItem.value > dataItem.maxValue || dataItem.value < dataItem.minValue){
+      if(dataItem.value > dataItem.maxValue || dataItem.value < 0){
         jsonData[dataItem.dataType] = 'Value exceeding boundries';
       }else{
 
