@@ -6,8 +6,8 @@
 
 void sensorSetup() {
   Serial.begin(9600);
-  pinMode(4, INPUT); // Setup for leads off detection LO +
-  pinMode(5, INPUT); // Setup for leads off detection LO -
+  pinMode(15, INPUT); // Setup for leads off detection LO +
+  pinMode(33, INPUT); // Setup for leads off detection LO -
 }
 
 StaticJsonDocument<200> sensorCode() {
