@@ -68,12 +68,15 @@ StaticJsonDocument<200> sensorCode() {
     //Serial.println("- - - - - - - - ");
     delay(3000);
     //lastTime = millis();
-
-  RawData rawData[] = {
+    int winoAvg = (adc0 + adc1 + adc2 + adc3) / 4;
+  /* RawData rawData[] = {
     {.dataType = "Wino 1", .value = adc0 * 0.125},
     {.dataType = "Wino 2", .value = adc1 * 0.125},
     {.dataType = "Wino 3", .value = adc2 * 0.125},
     {.dataType = "Wino 4", .value = adc3 * 0.125}
+  }; */
+  RawData rawData[] = {
+    {.dataType = "winogradsky_group", .value = winoAvg}
   };
 
   const size_t n = sizeof(rawData) / sizeof(rawData[0]);
